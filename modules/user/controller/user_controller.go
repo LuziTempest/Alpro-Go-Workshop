@@ -1,12 +1,12 @@
 package controller
 
 import (
-    "net/http"
+	"net/http"
 
-    "github.com/gin-gonic/gin"
-    "github.com/Mobilizes/materi-be-alpro/modules/user/service"
-    "github.com/Mobilizes/materi-be-alpro/modules/user/validation"
-    "github.com/Mobilizes/materi-be-alpro/pkg/utils"
+	"github.com/Mobilizes/materi-be-alpro/modules/user/service"
+	"github.com/Mobilizes/materi-be-alpro/modules/user/validation"
+	"github.com/Mobilizes/materi-be-alpro/pkg/utils"
+	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
@@ -31,4 +31,15 @@ func (ctrl *UserController) CreateUser(c *gin.Context) {
     }
 
     utils.SuccessResponse(c, http.StatusCreated, "User berhasil dibuat", user)
+}
+
+func (ctrl *UserController) GetById(c *gin.Context) {
+	id := c.Param("id")
+	user, err := ctrl.service.FindUser(id)
+    if err != nil {
+        utils.ErrorResponse(c, http.StatusInternalServerError, "Gagal mengambil user")
+        return
+    }
+
+    utils.SuccessResponse(c, http.StatusCreated, "User berhasil diambil", user)
 }

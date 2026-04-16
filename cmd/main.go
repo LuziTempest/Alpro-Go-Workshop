@@ -33,7 +33,7 @@ func main() {
     r := gin.Default()
 
     // Setup routes group
-    api := r.Group("/api")
+    api := r.Group("")
 
     // Setup Services
     jwtSvc := authService.NewJWTService()

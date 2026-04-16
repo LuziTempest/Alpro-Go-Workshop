@@ -523,7 +523,7 @@ type User struct {
 Database dijalankan via Docker agar tidak perlu install PostgreSQL secara lokal:
 func main() {
 	// Harusnya menggunakan .env but for demonstration only
-	dsn := "host=localhost user=username password=password dbname=go_workshop port=5432 sslmode=disable TimeZone=Asia/Jakarta"
+	dsn := "host=localhost user=postgres password=admin dbname=go_workshop port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

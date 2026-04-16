@@ -1,10 +1,10 @@
 package service
 
 import (
-    "github.com/Mobilizes/materi-be-alpro/database/entities"
-    "github.com/Mobilizes/materi-be-alpro/modules/user/dto"
-    "github.com/Mobilizes/materi-be-alpro/modules/user/repository"
-    "github.com/Mobilizes/materi-be-alpro/pkg/helpers"
+	"github.com/Mobilizes/materi-be-alpro/database/entities"
+	"github.com/Mobilizes/materi-be-alpro/modules/user/dto"
+	"github.com/Mobilizes/materi-be-alpro/modules/user/repository"
+	"github.com/Mobilizes/materi-be-alpro/pkg/helpers"
 )
 
 type UserService struct {
@@ -29,4 +29,12 @@ func (s *UserService) CreateUser(req *dto.CreateUserRequest) (*entities.User, er
 
     err = s.repo.Create(user)
     return user, err
+}
+
+func (s *UserService) FindUser(id string) (*entities.User, error) {
+	user, err := s.repo.FindById(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
