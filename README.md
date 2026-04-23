@@ -1097,7 +1097,7 @@ func (ctrl *UserController) GetById(c *gin.Context) {
 }
 ```
 
-Contoh : Mencari user dengan ID "2ca4b904-b99d-4709-b398-4589b4485ddd"
+Contoh : Mencari user dengan ID "2ca4b904-b99d-4709-b398-4589b4485ddd" -> `users/2ca4b904-b99d-4709-b398-4589b4485ddd`
 - Berhasil
 ```json
 {
