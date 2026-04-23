@@ -1059,9 +1059,151 @@ func RegisterUserRoutes(r *gin.RouterGroup, ctrl *controller.UserController) {
 
 > Ambil satu user berdasarkan ID. Kembalikan `404` jika tidak ditemukan.
 
+Tambahkan di `routes.go`
+
+```go
+func RegisterUserRoutes(r *gin.RouterGroup, ctrl *controller.UserController, jwtSvc *authService.JWTService) {
+	users := r.Group("/users")
+	{
+		users.POST("", ctrl.CreateUser)
+        users.GET("", ctrl.GetAll) 
+		users.GET("/:id", ctrl.GetById)
+	}
+}
+```
+
+Tambahkan di `repository/user_repository.go`
+
+```go
+func (r *UserRepository) FindById(id string) (*entities.User, error) {
+    var user entities.User
+    err := r.db.Where("id = ?", id).First(&user).Error
+    return &user, err
+}
+```
+
+Tambahkan di `controller/user_controller.go`
+
+```go
+func (ctrl *UserController) GetById(c *gin.Context) {
+	id := c.Param("id")
+	user, err := ctrl.service.FindUser(id)
+    if err != nil {
+        utils.ErrorResponse(c, http.StatusNotFound, "User tidak ditemukan")
+        return
+    }
+
+    utils.SuccessResponse(c, http.StatusOK, "User berhasil diambil", user)
+}
+```
+
+Contoh : Mencari user dengan ID "2ca4b904-b99d-4709-b398-4589b4485ddd"
+- Berhasil
+```json
+{
+    "data": {
+        "id": "2ca4b904-b99d-4709-b398-4589b4485ddd",
+        "created_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "deleted_at": null,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "role": "user"
+    },
+    "message": "User berhasil diambil",
+    "status": "success"
+}
+```
+
+- gagal
+
+Jika tidak ditemukan akan 404 Not Found dan mengembalikan error message
+```json
+{
+    "message": "User tidak ditemukan",
+    "status": "error"
+}
+```
+
+
 ### Challenge B -- `GET /users`
 
 > Ambil semua user. Kembalikan array JSON.
+
+Tambahkan di `routes.go`
+
+```go
+func RegisterUserRoutes(r *gin.RouterGroup, ctrl *controller.UserController, jwtSvc *authService.JWTService) {
+	users := r.Group("/users")
+	{
+		users.POST("", ctrl.CreateUser)
+        users.GET("", ctrl.GetAll) 
+		users.GET("/:id", ctrl.GetById)
+	}
+}
+```
+
+Tambahkan di `repository/user_repository.go`
+
+```go
+func (r *UserRepository) FindAll() ([]entities.User, error) {
+    var users []entities.User
+    err := r.db.Find(&users).Error
+    return users, err
+}
+```
+
+Tambahkan di `controller/user_controller.go`
+
+```go
+func (ctrl *UserController) GetAll(c *gin.Context) {
+    users, err := ctrl.service.FindAllUsers()
+    if err != nil {
+        utils.ErrorResponse(c, http.StatusInternalServerError, "Gagal mengambil data user")
+        return
+    }
+
+    utils.SuccessResponse(c, http.StatusOK, "Berhasil mengambil semua user", users)
+}
+```
+
+Contoh: Mengambil semua data user pada endoint `/users`
+
+```json
+{
+    "data": [
+        {
+            "id": "2ca4b904-b99d-4709-b398-4589b4485ddd",
+            "created_at": "0001-01-01T00:00:00Z",
+            "updated_at": "0001-01-01T00:00:00Z",
+            "deleted_at": null,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "user"
+        },
+        {
+            "id": "0ec376b8-a746-402a-895d-59a7e5213032",
+            "created_at": "0001-01-01T00:00:00Z",
+            "updated_at": "0001-01-01T00:00:00Z",
+            "deleted_at": null,
+            "name": "Luzi Naen",
+            "email": "luzi@gmail.com",
+            "role": "user"
+        },
+        {
+            "id": "a90ff07b-6639-4eeb-b383-e1f01d8a6684",
+            "created_at": "0001-01-01T00:00:00Z",
+            "updated_at": "0001-01-01T00:00:00Z",
+            "deleted_at": null,
+            "name": "Rimuru Tempest",
+            "email": "veldora@gmail.com",
+            "role": "user"
+        }
+    ],
+    "message": "Berhasil mengambil semua user",
+    "status": "success"
+}
+```
 
 > [!WARNING]
 > **Tips debugging:** Error paling umum di Go adalah lupa menangani `if err != nil`. Kalau ada `panic`, cari baris yang tidak menangani error return-nya. Gunakan `fmt.Println(err)` untuk print error ke terminal.

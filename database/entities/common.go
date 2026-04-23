@@ -5,9 +5,8 @@ import (
     "gorm.io/gorm"
 )
 
-// Common model equivalent of gorm.Model
 type Common struct {
-    ID        uint           `gorm:"primarykey" json:"id"`
+    ID        string         `gorm:"primaryKey;type:varchar(36)" json:"id"` 
     CreatedAt time.Time      `json:"created_at"`
     UpdatedAt time.Time      `json:"updated_at"`
     DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`

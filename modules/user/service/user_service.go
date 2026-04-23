@@ -38,3 +38,7 @@ func (s *UserService) FindUser(id string) (*entities.User, error) {
 	}
 	return user, nil
 }
+
+func (s *UserService) FindAllUsers() ([]entities.User, error) {
+    return s.repo.FindAll()
+}

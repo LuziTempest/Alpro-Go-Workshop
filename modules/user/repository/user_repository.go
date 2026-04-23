@@ -29,3 +29,8 @@ func (r *UserRepository) FindById(id string) (*entities.User, error) {
     return &user, err
 }
 
+func (r *UserRepository) FindAll() ([]entities.User, error) {
+    var users []entities.User
+    err := r.db.Find(&users).Error
+    return users, err
+}
